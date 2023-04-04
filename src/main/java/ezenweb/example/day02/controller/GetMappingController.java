@@ -11,7 +11,7 @@ import java.util.Map;
 @RequestMapping("/get") // 공통URL
 public class GetMappingController {
     // ---------------매개변수 요청--------------- //
-    // 1.
+    // 1.HttpServletRequest request
     @GetMapping("/method1")                     // 쿼리스트링 : http://localhost:8080/get/method1?param1=안녕
     public String method1(HttpServletRequest request){
         String param = request.getParameter(("param1"));
