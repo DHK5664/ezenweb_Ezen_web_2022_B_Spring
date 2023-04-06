@@ -35,7 +35,7 @@ function onget(){
             r.forEach((n)=>{
                 html += `
                         <tr>
-                            <th>${n.nno}</td> <td>${n.ncontents}</th>
+                            <th>${n.nno}</th> <th>${n.ncontents}</th>
                             <th>
                                 <button onclick="ondelete(${n.nno})" type="button">삭제</button>
                                 <button onclick="onupdate(${n.nno})" type="button">수정</button>
