@@ -19,7 +19,8 @@ function onSignup(){
         }
     })
 }
-
+/*
+    // ---------------------- 시큐리티 적용 될 경우 아래코드 사용 안함 ---------------------- //
 function onLogin(){
     let info = {
         memail : document.querySelector(".memail").value,
@@ -38,6 +39,7 @@ function onLogin(){
         }
     })
 }
+*/
 getMember();
 function getMember(){
 

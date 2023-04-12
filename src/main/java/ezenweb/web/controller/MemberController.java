@@ -29,8 +29,6 @@ public class MemberController {
         boolean result = memberService.write(memberDto);
         return result;
     }
-    // 2. 회원정보[세션] 로그아웃
-    @GetMapping("/logout")public boolean logout(){return memberService.logout();}
     // 2. [R]회원정보 호출
     @GetMapping("/info")
     public MemberDto info( ){ MemberDto result = memberService.info(); return result; }
@@ -49,10 +47,16 @@ public class MemberController {
         boolean result = memberService.delete(mno);
         return false;
     }
+    /*
     // --------------------- 스프링 시큐리티 사용하기 전 ---------------------- //
+    // 1. 로그인
     @PostMapping("/login")
     public boolean login(@RequestBody MemberDto memberDto){
         boolean result = memberService.login(memberDto);
         return result;
     }
+    // 2. 회원정보[세션] 로그아웃
+    @GetMapping("/logout")public boolean logout(){return memberService.logout();}
+
+     */
 }
