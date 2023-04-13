@@ -22,7 +22,7 @@ public class MemberDto implements UserDetails {
     // 추가
     private LocalDateTime cdate;
     private LocalDateTime udate;
-    // toEntity
+    // toEntity 입력용
     public MemberEntity toEntity(){
         return MemberEntity.builder()
                 .mno(this.mno)      .memail(this.memail)

@@ -22,7 +22,7 @@ public class MemberEntity extends BaseTime {
     @Column
     private String mrole; // 6. 회원등급
 
-    // toDto
+    // toDto 출력용 [패스워드]
     public MemberDto toDto(){
         return MemberDto.builder()
                 .mno(this.mno)      .memail(this.memail)
