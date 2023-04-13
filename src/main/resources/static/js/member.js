@@ -49,11 +49,11 @@ function getMember(){
         success : (r)=>{
             document.querySelector('.infobox').innerHTML = `${r.mname}님`
             document.querySelector('.infobox').innerHTML +=
-                `<button onclick="getLogout()" type="button">로그아웃</button>`
+                `<a href="/member/logout"><button>로그아웃</button></a>`
         }
     })
 }
-
+/*
 function getLogout(){
     $.ajax({
         url : "/member/logout",
@@ -63,7 +63,7 @@ function getLogout(){
         }
     })
 }
-
+*/
 function getMemail(){
     document.querySelector(".mname").value
     document.querySelector(".mphone").value
