@@ -65,6 +65,26 @@ function getLogout(){
 }
 */
 function getMemail(){
-    document.querySelector(".mname").value
-    document.querySelector(".mphone").value
+    $.ajax({
+        url:"/member/findemail",
+        method : "get",
+        data:{"mname" : document.querySelector(".mname").value,
+        "mphone" : document.querySelector(".mphone").value},
+        success : (r)=>{
+            console.log(r);
+            alert("찾으신 이메일은 :"+" "+r+" "+"입니다.")
+        }
+    })
+}
+
+function getPassword(){
+    $.ajax({
+        url:"/member/findpw",
+        method : "get",
+        data:{"memail" : document.querySelector(".memail").value,
+        "mphone" : document.querySelector(".mphone").value},
+        success:(r)=>{
+            console.log(r);
+        }
+    })
 }

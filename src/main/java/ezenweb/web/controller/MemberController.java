@@ -16,6 +16,10 @@ public class MemberController {
     public Resource getSignup(){return new ClassPathResource("templates/member/signup.html");}
     @GetMapping("/login")
     public Resource getLogin(){return new ClassPathResource(("templates/member/login.html"));}
+    @GetMapping("/findID")
+    public Resource getFindid(){return new ClassPathResource("templates/member/findID.html");}
+    @GetMapping("/findpw")
+    public Resource getFindpw(){return new ClassPathResource("templates/member/findPassword.html");}
     // 1.@Autowired 없을때 객체[빈] 생성
         // MemberService service = new MemberService();
     // 2.@Autowired 있을때 객체[빈] 자동생성
@@ -32,6 +36,22 @@ public class MemberController {
     // 2. [R]회원정보 호출
     @GetMapping("/info")
     public MemberDto info( ){ MemberDto result = memberService.info(); return result; }
+
+    // 과제. 이메일찾기
+    @GetMapping("/findemail")
+    public String findid(@RequestParam String mname , @RequestParam String mphone ){
+        log.info(" name , phone info : " + mname + " " + mphone);
+        String result = memberService.findid(mname , mphone);
+        return result;
+    }
+    // 과제. 비번찾기
+    @GetMapping("/findpw")
+    public String findpw(@RequestParam String memail, @RequestParam String mphone){
+        log.info(" email, phone info : " + memail + " " + mphone);
+        String result = memberService.findpw(memail , mphone);
+        return result;
+    }
+
     // 3. [U]회원정보 수정
     @PutMapping("/info")
     public boolean update( @RequestBody MemberDto memberDto){

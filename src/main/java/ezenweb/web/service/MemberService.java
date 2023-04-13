@@ -218,6 +218,29 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
     @Transactional
     public boolean logout(){ request.getSession().setAttribute("login" , null); return true;}*/
 
+    // 과제 : 이메일 찾기
+    public String findid(String mname , String mphone){
+        Optional<MemberEntity> entity = memberEntityRepository.findByMnameAndMphone(mname,mphone);
+
+        if( entity.isPresent() ){
+            return entity.get().getMemail();
+        }else{
+            return null;
+        }
+
+
+    }
+
+    public String findpw(String memail , String mphone){
+        Optional<MemberEntity> entity = memberEntityRepository.findByMemailAndMpassword(memail,mphone);
+
+        if(entity.isPresent()){
+            return entity.get().getMpassword();
+        }else {
+            return null;
+        }
+    }
+
 }
 
 // == 스택 메모리 내 데이터 비교
