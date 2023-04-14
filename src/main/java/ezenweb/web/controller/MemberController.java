@@ -18,7 +18,7 @@ public class MemberController {
     public Resource getLogin(){return new ClassPathResource(("templates/member/login.html"));}
     @GetMapping("/findID")
     public Resource getFindid(){return new ClassPathResource("templates/member/findID.html");}
-    @GetMapping("/findpw")
+    @GetMapping("/findPW")
     public Resource getFindpw(){return new ClassPathResource("templates/member/findPassword.html");}
     // 1.@Autowired 없을때 객체[빈] 생성
         // MemberService service = new MemberService();
