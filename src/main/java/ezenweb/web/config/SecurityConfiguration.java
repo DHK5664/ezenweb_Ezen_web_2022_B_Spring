@@ -63,7 +63,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .invalidateHttpSession(true) // 세션 초기화 x
                 .and()
                     .oauth2Login() // 소셜 로그인 설정
-                    .defaultSuccessUrl("/") // 로그인 성공시 이동할 매핑 URL
+                    //.defaultSuccessUrl("/") // 로그인 성공시 이동할 매핑 URL
+                    .successHandler(authSuccessFailHandler)
                     .userInfoEndpoint()
                     .userService(memberService); // oauth2 서비스를 처리 할 서비스 구현
     }
