@@ -10,17 +10,28 @@ import Product from'./example/ex1component/Product';
 import ProductList from'./example/ex1component/ProductList';
 import Clock from'./example/ex1component/Clock';
 import CommentList from'./example/ex2css/CommentList';
+import AppTodo from './example/exbook/AppTodo';
 
 // 1. HTML에 존재하는 div 가져오기 [(document.getElementById('root')]
 // 2. ReactDOM.createRoot(해당 div) : 해당 div를 리액트 root 로 사용하여 root 객체 생성
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// 6. 교재 Todo 컴포넌트 적용
+root.render(
+    <React.StrictMode>
+        <AppTodo />
+    </React.StrictMode>
+);
+
+
+/*
 // 5. 예제 5 css 적용
 root.render(
     <React.StrictMode>
         <CommentList />
     </React.StrictMode>
 );
+*/
 
 /*// 4. 예제 4 렌더링 반복
 // 1초마다 해당 코드 실행 : setInterval( ()=> {} , 1000 );
