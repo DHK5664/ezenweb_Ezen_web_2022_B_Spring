@@ -32,13 +32,22 @@ export default function AppTodo(props){
         setItems([...newItems]);
     }
 
+    // 4. 수정함수
+    const editItem = ()=>{
+        setItems([...items]) // 재 렌더링
+    }
+
     // 반복문 이용한 Todo 컴포넌트 생성
     const TodoItems =
         <Paper style={{margin : 16}}> {/*JSX 의 style 속성 방법*/}
             <List>
                 {
                     items.map( (i)=>
-                        <Todo item = {i} key = {i.id} deleteItem={deleteItem}/>
+                        <Todo
+                        item = {i}
+                        key = {i.id}
+                        deleteItem={deleteItem}
+                        수정함수 = {editItem}/>
                     )
                 }
             </List>
