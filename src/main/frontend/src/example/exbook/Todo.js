@@ -12,6 +12,7 @@ import {
         from '@mui/material';
 // 삭제 아이콘 // npm install @mui/icons-material
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined'
+import axios from 'axios';
 
 export default function Todo(props) {
     console.log(props)
@@ -37,6 +38,7 @@ export default function Todo(props) {
     const turnOnReadOnly = (e)=>{ console.log("turnOnReadOnly")
         if(e.key == "Enter"){
             setReadOnly(true);
+            axios.put( "http://192.168.17.24:8080/todo" , item ).then( r => { console.log( r ); })
         }
     }
 
@@ -51,6 +53,7 @@ export default function Todo(props) {
     const checkboxEventHandler = (e)=>{
         item.done = e.target.checked; // checked : 체크일경우 true 아니면 false
         editItem(); // 상위 컴포넌트 렌더링
+        axios.put( "http://192.168.17.24:8080/todo" , item ).then( r => { console.log( r ); })
     }
 
 

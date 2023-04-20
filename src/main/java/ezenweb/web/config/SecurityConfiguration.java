@@ -52,6 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                             .ignoringAntMatchers("/member/login")
                             .ignoringAntMatchers("/board/category/write")
                             .ignoringAntMatchers("/board/write")
+                            .ignoringAntMatchers("/todo")
                 .and()// 기능 추가 / 구분할때 사용되는 메소드
                     .formLogin()
                         .loginPage("/member/login") // 로그인으로 사용될 페이지 의 URL

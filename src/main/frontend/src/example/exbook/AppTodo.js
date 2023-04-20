@@ -1,8 +1,9 @@
 // 교재 App컴포넌트 --> AppTodo 컴포넌트
-import React , { useState } from 'react';
+import React , { useState , useEffect } from 'react';
 import Todo from './Todo';
 import {List , Paper , Container} from '@mui/material';
 import AddTodo from './AddTodo';
+import axios from 'axios'; // npm install axios vs [ install  -> i ]
 
 
 export default function AppTodo(props){
@@ -13,14 +14,37 @@ export default function AppTodo(props){
         [ // array s
         ] // array end
     ) // useState 함수 end
+    // 컴포넌트가 실행될때 '한번' 이벤트 발생
+
+
+    useEffect(()=>{
+        // ajax : jquery 설치 가 필요
+        // fetch : 리액트 전송 비동기 통신 함수 [ 내장함수 - 설치 X ]
+        // axios : 리액트 외부 라이브러리 [ 설치 필요 ]   JSON 통신이 기본값
+        axios.get("http://192.168.17.24:8080/todo")
+            .then(r=>{
+                console.log(r);
+                setItems(r.data); // 서버에게 응답받은 리스트를 재렌더링
+            })
+        // 해당 주소에 매핑되는 컨트롤에 @CrossOrigin(origins = "http://localhost:3000") 추가
+        //axios.post("http://localhost:8080/todo" , { mname : "유재석"}).then(r=>{console.log(r);})
+        //axios.put("http://localhost:8080/todo").then(r=>{console.log(r);})
+        //axios.delete("http://localhost:8080/todo" , {params:{ id : 1 }}).then(r=>{console.log(r);})
+    },[])
 
     // 2. items에 새로운 item 등록하는 함수
     const addItem = (item)=>{ // 함수로부터 매개변수로 전달받은 item
-        item.id = "ID-"+items.length // ID 구성 // ??? DB PK 사용
+        //item.id = "ID-"+items.length // ID 구성 // ??? DB PK 사용
         item.done = false;          // 체크 여부
         setItems( [...items , item ] ); // 기존 상태 items 에 item 추가
         // item = { title : "입력받은값" , id="id-배열길이" , done = "기본값false" }
         // setItems( [ ...기본배열 , 값 ] );
+        axios.post("http://192.168.17.24:8080/todo" , item).then(r=>{console.log(r);})
+         axios.get("http://192.168.17.24:8080/todo")
+                    .then(r=>{
+                        console.log(r);
+                        setItems(r.data); // 서버에게 응답받은 리스트를 재렌더링
+                    })
     }
 
     // 3. items 에 item 삭제
@@ -30,6 +54,7 @@ export default function AppTodo(props){
         const newItems= items.filter(i => i.id !== item.id);
             // * 삭제할 id를 제외한 새로운 newItems 배열이 선언
         setItems([...newItems]);
+        axios.delete( "http://192.168.17.24:8080/todo" , { params : { id : item.id } }  ).then( r => { console.log( r ); })
     }
 
     // 4. 수정함수
