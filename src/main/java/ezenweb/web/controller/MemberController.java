@@ -11,15 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController // @Controller + @ResponseBody
 @Slf4j  // 로그기능주입
 @RequestMapping("/member")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MemberController {
-    @GetMapping("/signup") // localhost:8080/member/signup 요청시 아래 템플릿에 반환
+    
+    // 서버사이드 라우팅 : 클라이언트가 서버에게 html 요청하는 방식 [ 리액트 통합 개발일경우 사용안함 ]
+/*    @GetMapping("/signup") // localhost:8080/member/signup 요청시 아래 템플릿에 반환
     public Resource getSignup(){return new ClassPathResource("templates/member/signup.html");}
     @GetMapping("/login")
     public Resource getLogin(){return new ClassPathResource(("templates/member/login.html"));}
     @GetMapping("/findID")
     public Resource getFindid(){return new ClassPathResource("templates/member/findID.html");}
     @GetMapping("/findPW")
-    public Resource getFindpw(){return new ClassPathResource("templates/member/findPassword.html");}
+    public Resource getFindpw(){return new ClassPathResource("templates/member/findPassword.html");}*/
     // 1.@Autowired 없을때 객체[빈] 생성
         // MemberService service = new MemberService();
     // 2.@Autowired 있을때 객체[빈] 자동생성

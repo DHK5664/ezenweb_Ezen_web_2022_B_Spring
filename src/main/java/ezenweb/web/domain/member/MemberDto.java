@@ -26,8 +26,8 @@ public class MemberDto implements UserDetails , OAuth2User {
     private Map<String, Object> 소셜회원정보; // 8. oauth2 인증 회원정보
 
     // 추가
-    private LocalDateTime cdate;
-    private LocalDateTime udate;
+    private String cdate;
+    private String udate;
     // toEntity 입력용
     public MemberEntity toEntity(){
         return MemberEntity.builder()

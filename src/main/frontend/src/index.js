@@ -13,20 +13,25 @@ import CommentList from'./example/ex2css/CommentList';
 import AppTodo from './example/exbook/AppTodo';
 import Hook1 from './example/ex3hook/Hook1';
 import Hook2 from './example/ex3hook/Hook2';
+import Index from './component/Index';
 
 // 1. HTML에 존재하는 div 가져오기 [(document.getElementById('root')]
 // 2. ReactDOM.createRoot(해당 div) : 해당 div를 리액트 root 로 사용하여 root 객체 생성
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// ----- 수업용 컴포넌트
+root.render(
+    <Index />
+);
 
-
-
+/*
 // 6. 교재 Todo 컴포넌트 적용
 root.render(
     <React.StrictMode>
         <AppTodo />
     </React.StrictMode>
 );
+*/
 
 /*// 훅예제2
 root.render(

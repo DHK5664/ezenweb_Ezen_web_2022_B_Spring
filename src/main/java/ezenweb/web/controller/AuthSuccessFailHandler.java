@@ -1,6 +1,7 @@
 package ezenweb.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ezenweb.web.domain.member.MemberDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -29,8 +30,8 @@ public class AuthSuccessFailHandler implements AuthenticationSuccessHandler , Au
     @Override // 인수 : request, response, authentication : 인증 성공한 정보
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("authentication : " + authentication);
-
-        String json = objectMapper.writeValueAsString("로그인 성공했다");
+        MemberDto dto = (MemberDto)authentication.getPrincipal();
+        String json = objectMapper.writeValueAsString(dto);
 
         // ajax에게 전송
         response.setCharacterEncoding("UTF-8");
@@ -42,7 +43,7 @@ public class AuthSuccessFailHandler implements AuthenticationSuccessHandler , Au
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.info("exception : " + exception.toString());
 
-        String json = objectMapper.writeValueAsString("로그인 실패했다");
+        String json = objectMapper.writeValueAsString(false);
 
         // ajax에게 전송
         response.setCharacterEncoding("UTF-8");
