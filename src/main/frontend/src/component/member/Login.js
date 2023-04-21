@@ -22,7 +22,9 @@ export default function Login(props) {
                     // JSON.stringify(객체) : 해당 객체를 String 타입의 json 형식
                         // JSON.stringify() : object --> String
                         // JSON.parse()     : String --> Object
-                    localStorage.setItem("login_token" , JSON.stringify(r.data) );
+                    //localStorage.setItem("login_token" , JSON.stringify(r.data) );
+                    // JS 세션 스토리지 [ 브라우저 모두 닫히면 사라진다. 다른 도메인과 같이 저장된다. ]
+                    sessionStorage.setItem("login_token" , JSON.stringify(r.data) );
 
                     window.location.href="/";
                 }
