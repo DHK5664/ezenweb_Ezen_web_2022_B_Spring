@@ -189,6 +189,9 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
       return memberEntityRepository.existsByMemail(memail);
     }
 
+    // 6. 전화번호 중복 확인
+    public boolean phonecheck(String mphone) {return memberEntityRepository.existsByMphone(mphone);}
+
     // [ 스프링 시큐리티 적용했을때 사용되는 로그인 메소드 ]
     @Override
     public UserDetails loadUserByUsername(String memail) throws UsernameNotFoundException {

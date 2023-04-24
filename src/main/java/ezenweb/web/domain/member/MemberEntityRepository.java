@@ -21,7 +21,9 @@ public interface MemberEntityRepository extends JpaRepository<MemberEntity , Int
     boolean existsByMemail(String memail);
     // 4. [로그인 활용] 만약에 동일한 이메일과 패스워드가 존재하면 true 아니면 false
     boolean existsByMemailAndMpassword(String memail , String mpassword);
-    
+
+    boolean existsByMphone(String mphone);
+
     // 아이디찾기 [ 이름 , 전번 일치 ]
     Optional<MemberEntity> findByMnameAndMphone(String mname , String mphone);
     // 비번찾기  [ 아이디 ,전번 일치 ]

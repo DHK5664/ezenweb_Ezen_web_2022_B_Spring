@@ -78,6 +78,13 @@ public class MemberController {
         return memberService.idcheck(memail);
     }
 
+    // 6. [G] 전화번호 중복체크
+    @GetMapping("/phonecheck")
+    public boolean phonecheck(@RequestParam String mphone){
+        log.info("phonecheck phone:" +mphone);
+        return memberService.phonecheck(mphone);
+    }
+
     /*
     // --------------------- 스프링 시큐리티 사용하기 전 ---------------------- //
     // 1. 로그인

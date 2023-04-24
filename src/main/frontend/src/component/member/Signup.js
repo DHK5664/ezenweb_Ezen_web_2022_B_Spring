@@ -3,6 +3,7 @@ import axios from 'axios'
 
 export default function Signup(props) {
 let [memailMsg , setMemailMsg] = useState();
+let [mphoneMsg , setMphoneMsg] = useState();
     // 1. 회원가입
     //function onSignup(){} ---> 변수형 익병함수 변환
     //function onSignup(){} ---> const 변수 = () => {}
@@ -41,6 +42,16 @@ let [memailMsg , setMemailMsg] = useState();
             .catch(e=>console.log(e))
     }
 
+    const phoneCheck = (e)=>{
+    axios.get("http://localhost:8080/member/phonecheck" , {params:{mphone:e.target.value}})
+        .then(r=>{
+            if(r.data==true){setMphoneMsg('전화번호 중복')}
+            else{setMphoneMsg('★')}
+            }
+        )
+        .catch(e=>console.log(e))
+    }
+
     return(<div>
             <h3>회원가입 페이지</h3>
             <form>
@@ -49,7 +60,9 @@ let [memailMsg , setMemailMsg] = useState();
                 <br/>
                 비밀번호 : <input type="text" className="mpassword"/> <br/>
                 이름 : <input type="text" className="mname"/> <br/>
-                전화번호 : <input type="text" className="mphone"/> <br/>
+                전화번호 : <input type="text" className="mphone" onChange={phoneCheck} />
+                <span>{mphoneMsg}</span>
+                <br/>
                 <button onClick={onSignup} type="button">가입</button>
             </form>
     </div>)
