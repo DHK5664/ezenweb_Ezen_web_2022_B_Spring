@@ -2,7 +2,7 @@ import React , {useState , useEffect} from 'react'
 import axios from 'axios'
 
 export default function Signup(props) {
-
+let [memailMsg , setMemailMsg] = useState();
     // 1. 회원가입
     //function onSignup(){} ---> 변수형 익병함수 변환
     //function onSignup(){} ---> const 변수 = () => {}
@@ -28,10 +28,25 @@ export default function Signup(props) {
         .catch(err=>{ console.log(err) });
     }
 
+    // 2. 아이디 중복체크
+    const idCheck = (e)=>{
+        // 1.console.log(document.querySelector('.memail').value);
+        // 2. console.log(e.target.value);
+        axios.get("http://localhost:8080/member/idcheck",{params:{memail:e.target.value}})
+            .then(res=>{
+                if(res.data==true){setMemailMsg('사용중인 아이디 입니다.')}
+                else{setMemailMsg('사용가능한 이메일 입니다.')}
+                }
+            )
+            .catch(e=>console.log(e))
+    }
+
     return(<div>
             <h3>회원가입 페이지</h3>
             <form>
-                아이디[이메일] : <input type="text" className="memail"/> <br/>
+                아이디[이메일] : <input type="text" className="memail" onChange={idCheck}/>
+                <span>{memailMsg}</span>
+                <br/>
                 비밀번호 : <input type="text" className="mpassword"/> <br/>
                 이름 : <input type="text" className="mname"/> <br/>
                 전화번호 : <input type="text" className="mphone"/> <br/>

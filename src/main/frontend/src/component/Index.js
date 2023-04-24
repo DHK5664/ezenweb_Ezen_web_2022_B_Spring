@@ -7,6 +7,8 @@ import Signup from "./member/Signup"
 import Header from "./Header"
 import Footer from "./Footer"
 import Main from "./Main"
+import Find from "./member/Find"
+import List from "./board/List"
 
 
 
@@ -16,8 +18,10 @@ export default function Index(props) {
             <Header />
             <Routes>
                 <Route path="/" element={ <Main /> } />
-                <Route path="/login" element={ <Login /> } />
-                <Route path="/signup" element={ <Signup /> } />
+                <Route path="/member/login" element={ <Login /> } />
+                <Route path="/member/signup" element={ <Signup /> } />
+                <Route path="/member/find" element={ <Find /> } />
+                <Route path="/board/list" element={ <List /> } />
             </Routes>
             <Footer />
         </BrowserRouter>

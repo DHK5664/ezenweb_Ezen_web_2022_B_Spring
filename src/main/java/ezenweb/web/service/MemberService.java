@@ -183,6 +183,12 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
         }
         return false;
     }
+
+    //  5. 아이디 중복 확인
+    public boolean idcheck(String memail){
+      return memberEntityRepository.existsByMemail(memail);
+    }
+
     // [ 스프링 시큐리티 적용했을때 사용되는 로그인 메소드 ]
     @Override
     public UserDetails loadUserByUsername(String memail) throws UsernameNotFoundException {
@@ -256,16 +262,29 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
 
 
     }
-
+    @Transactional
     public String findpw(String memail , String mphone){
         Optional<MemberEntity> entity = memberEntityRepository.findByMemailAndMpassword(memail,mphone);
-
+        String ranStr="abcdefghijklmnopqystuvwxyz1234567890";
+        String newpwd="";
         if(entity.isPresent()){
-            return entity.get().getMpassword();
-        }else {
-            return null;
+            // 1. 6자리 임시밀번호 생성
+                // 1. 6자리 난수 생성
+            for(int i=0; i<6; i++) {
+                Random random =new Random();
+                int ran=random.nextInt(ranStr.length());
+                newpwd+=ranStr.charAt(ran);
+            }//for en
+            //2. 찾은 엔티티에 임시비밀번호로 변경
+                // 1. 암호화 하기
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // 2. 엔티티에 저장
+            entity.get().setMpassword( passwordEncoder.encode(newpwd));
+
         }
+        return newpwd; // 2. 생성된 임시비밀번호 반환
     }
+
 
 }
 

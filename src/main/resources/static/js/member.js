@@ -103,6 +103,7 @@ function getPassword(){
         "mphone" : document.querySelector(".mphone").value},
         success:(r)=>{
             console.log(r);
+            alert("임시 비밀번호는 :"+r+" "+"입니다.")
         }
     })
 }

@@ -70,6 +70,14 @@ public class MemberController {
         boolean result = memberService.delete(mno);
         return false;
     }
+
+    // 5. [G] 아이디 중복체크
+    @GetMapping("/idcheck")
+    public boolean idcheck(@RequestParam String memail){
+        log.info("idcheck memail:" +memail);
+        return memberService.idcheck(memail);
+    }
+
     /*
     // --------------------- 스프링 시큐리티 사용하기 전 ---------------------- //
     // 1. 로그인
