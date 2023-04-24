@@ -263,11 +263,11 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
 
     }
     @Transactional
-    public String findpw(String memail , String mphone){
-        Optional<MemberEntity> entity = memberEntityRepository.findByMemailAndMpassword(memail,mphone);
+    public String findpw(String memail , String mphone){ log.info("Findpw :" +memail+""+mphone );
+        Optional<MemberEntity> entity = memberEntityRepository.findByMemailAndMphone(memail,mphone);
+        if(entity.isPresent()){
         String ranStr="abcdefghijklmnopqystuvwxyz1234567890";
         String newpwd="";
-        if(entity.isPresent()){
             // 1. 6자리 임시밀번호 생성
                 // 1. 6자리 난수 생성
             for(int i=0; i<6; i++) {
@@ -280,9 +280,10 @@ public class MemberService implements UserDetailsService , OAuth2UserService<OAu
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             // 2. 엔티티에 저장
             entity.get().setMpassword( passwordEncoder.encode(newpwd));
-
+            return newpwd;
         }
-        return newpwd; // 2. 생성된 임시비밀번호 반환
+        return "실패";
+         // 2. 생성된 임시비밀번호 반환
     }
 
 

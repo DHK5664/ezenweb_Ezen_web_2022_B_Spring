@@ -27,6 +27,8 @@ public interface MemberEntityRepository extends JpaRepository<MemberEntity , Int
     // 비번찾기  [ 아이디 ,전번 일치 ]
     boolean existsByMemailAndMphone(String memail, String mphone);
 
+    Optional<MemberEntity> findByMemailAndMphone(String memail , String mphone);
+
     // * 예시
     //@Query("select * from MemberEntity m where m.memail = ?1")  // ?1 : 첫번쨰 물음표
     //MemberEntity 아이디로엔티티찾기(String memail);
