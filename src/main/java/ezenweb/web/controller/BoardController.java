@@ -29,7 +29,7 @@ public class BoardController {
     @GetMapping("/category/list")
     public List<CategoryDto> categoryList(  ){  log.info("c categoryList : " );
         List< CategoryDto> result = boardService.categoryList(  );
-        return categoryList();
+        return result;
     }
 
     // 3. 게시물 쓰기  // body { "btitle" : "입력한제목" , "bcontent" : "입력한내용" , "cno" : "선택받은번호" }
