@@ -53,21 +53,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .invalidateHttpSession(true) // 세션 초기화 x
                 .and()
                     .oauth2Login() // 소셜 로그인 설정
-                    //.defaultSuccessUrl("/") // 로그인 성공시 이동할 매핑 URL
-                    .successHandler(authSuccessFailHandler)
+                    .defaultSuccessUrl("/") // 로그인 성공시 이동할 매핑 URL
+                    //.successHandler(authSuccessFailHandler)
                     .userInfoEndpoint()
                     .userService(memberService); // oauth2 서비스를 처리 할 서비스 구현
 
         http.cors(); // CORS 정책 사용
-
-        // 권한에 따른 HTTP 요청 제한
-      http.csrf().disable();
+        http.csrf().disable(); // csrf 사용 해제
 
     }// configure end
 
     // import org.springframework.web.cors.CorsConfigurationSource;
     // 스프링 시큐리티에 CORS 정책 설정 [ 리액트[3000]의 요청 받기 위해서 ]
-    @Bean // 빈 등록
+  /*  @Bean // 빈 등록
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));    // 주소
@@ -78,7 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**",corsConfiguration);
         return source;
     }
-
+*/
 
 }// SecurityConfiguration class end
 

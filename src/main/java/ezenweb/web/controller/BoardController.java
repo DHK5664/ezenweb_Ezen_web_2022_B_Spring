@@ -2,6 +2,7 @@ package ezenweb.web.controller;
 
 import ezenweb.web.domain.board.BoardDto;
 import ezenweb.web.domain.board.CategoryDto;
+import ezenweb.web.domain.board.PageDto;
 import ezenweb.web.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +10,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @Slf4j
 @RequestMapping("/board")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class BoardController {
+    // 서비스 객체들
     @Autowired private BoardService boardService;
+    // ---------------------- view 반환 ------------------------ //
+/*    @GetMapping("")
+    public Resource index(){
+        return new ClassPathResource("templates/board/list.html");
+    }*/
+    // ----------------------- model 반환 ------------------------//
     // 1. 카테고리 등록
     @PostMapping("/category/write") // body { cname : '공지사항' }
     public boolean categoryWrite( @RequestBody BoardDto boardDto ){
@@ -33,17 +41,29 @@ public class BoardController {
     }
 
     // 3. 게시물 쓰기  // body { "btitle" : "입력한제목" , "bcontent" : "입력한내용" , "cno" : "선택받은번호" }
-    @PostMapping("/write")  // 요청받은 JSON 필드명과 dto 필드명 일치할 경우 자동 매핑
+    @PostMapping("")  // 요청받은 JSON 필드명과 dto 필드명 일치할 경우 자동 매핑
     public byte write( @RequestBody BoardDto boardDto ){ log.info("c board dto : " + boardDto );
         byte result = boardService.write( boardDto );
         return result;
     }
-    // 4. 카테고리별 게시물 출력
-    @GetMapping("/list")
-    public List<BoardDto> list( @RequestParam int cno ){ log.info("c list cno : " + cno );
-        List<BoardDto> result = boardService.list( cno );
+    // 4. 카테고리별 게시물 전체 출력
+    @GetMapping("")
+    public PageDto get(@RequestParam int cno , @RequestParam int page  ){
+        log.info("c list cno : " + cno + "   " + page );
+        PageDto result = boardService.list( cno , page );
         return result;
     }
+    // 수정
+    @PutMapping("")
+    public boolean put(  ){  return true;  }
+    // 삭제
+    @DeleteMapping("")
+    public boolean delete(  ){  return true;  }
+
+    // 개별 출력
+    @GetMapping("/getboard")
+    public BoardDto getboard(  int bno ){  return null;  }
+
 
     // 5. 내가 쓴 게시물 출력
     @GetMapping("/myboards")

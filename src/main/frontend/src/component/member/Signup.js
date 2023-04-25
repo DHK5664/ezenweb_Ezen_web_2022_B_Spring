@@ -17,7 +17,7 @@ let [mphoneMsg , setMphoneMsg] = useState();
         console.log(info)
     // ajax ---> axios 변환
     axios
-        .post("http://localhost:8080/member/info" , info)
+        .post("/member/info" , info)
         .then(r=>{
             console.log(r);
             if(r.data == true){
@@ -33,7 +33,7 @@ let [mphoneMsg , setMphoneMsg] = useState();
     const idCheck = (e)=>{
         // 1.console.log(document.querySelector('.memail').value);
         // 2. console.log(e.target.value);
-        axios.get("http://localhost:8080/member/idcheck",{params:{memail:e.target.value}})
+        axios.get("/member/idcheck",{params:{memail:e.target.value}})
             .then(res=>{
                 if(res.data==true){setMemailMsg('사용중인 아이디 입니다.')}
                 else{setMemailMsg('사용가능한 이메일 입니다.')}

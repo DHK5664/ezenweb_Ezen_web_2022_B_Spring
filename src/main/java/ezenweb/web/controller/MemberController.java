@@ -8,10 +8,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 
+// @CrossOrigin(origins = "http://localhost:3000")
 @RestController // @Controller + @ResponseBody
 @Slf4j  // 로그기능주입
 @RequestMapping("/member")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class MemberController {
     
     // 서버사이드 라우팅 : 클라이언트가 서버에게 html 요청하는 방식 [ 리액트 통합 개발일경우 사용안함 ]
