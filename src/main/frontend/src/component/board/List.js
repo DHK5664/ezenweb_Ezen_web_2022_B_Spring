@@ -23,18 +23,18 @@ export default function List(props) {
 
     // 1. 요청한 게시물 정보를 가지고 있는 리스트 변수[상태 관리변수]
     let [rows,setRows] = useState([])
-    let [ pageInfo , setPageInfo ] = useState( { 'cno' : 0 , 'page' : 1 } )
+    let [ pageInfo , setPageInfo ] = useState( { 'cno' : 0 , 'page' : 1 , 'key' : '' , 'keyword' : '' } )
     let [ totalPage , setTotalPage ] = useState( 1 );
     let [ totalCount , setTotalCount ] = useState( 1 );
     // 2. 서버에게 요청하기 [컴포넌트가 처음 생성 되었을때]
     // useEffect(()=>{},[]) vs useEffect(()=>{}) 각각 한번실행 , 매번실행
     useEffect(()=>{
-    axios.get('/board',{ params : pageInfo })
-        .then( r => { console.log(r);
-            setRows( r.data.boardDtoList )  // 응답받은 게시물 리스트 대입
-            setTotalPage( r.data.totalPage ) // 응답받은 총 페이지수 대입
-            setTotalCount( r.data.totalCount) // 응답받은 총 게시물수 대입
-        } )
+        axios.get('/board',{ params : pageInfo })
+            .then( r => { console.log(r);
+                setRows( r.data.boardDtoList )  // 응답받은 게시물 리스트 대입
+                setTotalPage( r.data.totalPage ) // 응답받은 총 페이지수 대입
+                setTotalCount( r.data.totalCount) // 응답받은 총 게시물수 대입
+            } )
             .catch(err =>{console.log(err);})
     },[pageInfo]) // pageInfo( cno , page ) 변경될때마다 해당 useEffect 실행된다.
 
@@ -44,10 +44,16 @@ export default function List(props) {
         } // [ ...배열명 ] , { ...객체명 } : 기존 배열/객체의 새로운 메모리 할당
 
         // 4. 페이징 변경
-        const selectPage = (e) =>{
-            console.log( e.target.outerText ); // 해당 button 에서 밖으로 출력되는 text 호출
-            pageInfo.page = e.target.outerText;
-            setPageInfo( {...pageInfo } )
+        const selectPage = (e , value) =>{ console.log( value );
+            pageInfo.page = value;  // 버튼이 교체 되었을때 페이지번호 가져와서 상태변수에 대입
+            setPageInfo( {...pageInfo } )   // 버튼이 교체 되었을때 페이지번호를 상태변수에 새로고침[ 렌더링 ]
+        }
+        // 5. 검색했을때 // const 상수 vs let 변수
+        const onSearch = ()=>{
+            pageInfo.key = document.querySelector('.key').value
+            pageInfo.keyword = document.querySelector('.keyword').value
+            pageInfo.page = 1 // 검색했을때 첫페이지 이동
+            setPageInfo({...pageInfo})
         }
 
       return(
@@ -72,7 +78,7 @@ export default function List(props) {
               {rows.map((row) => (
                 <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                   <TableCell component="th" scope="row"> {row.bno} </TableCell>
-                  <TableCell align="left">{row.btitle}</TableCell>
+                  <TableCell align="left"><a href={"/board/view/"+row.bno} > {row.btitle} </a></TableCell>
                   <TableCell align="center">{row.mname}</TableCell>
                   <TableCell align="center">{row.bdate}</TableCell>
                   <TableCell align="center">{row.bview}</TableCell>
@@ -83,10 +89,19 @@ export default function List(props) {
         </TableContainer>
         <div style={{ display:'flex' , justifyContent : 'center' , margin : '40px 0px' }}>
             { /* count = 전체 페이지수 */}
-            <Pagination count={ totalPage } color="primary" onClick={ selectPage } />
+            <Pagination count={ totalPage } color="primary" onChange={ selectPage } />
+        </div>
+        <div className="searchBox">
+            <select className="key">
+                <option value="btitle"> 제목 </option>
+                <option value="bcontent"> 내용 </option>
+            </select>
+            <input type="text" className="keyword" />
+            <button type="button" onClick={ onSearch}> 검색 </button>
         </div>
       </Container>)
 }
+/*
 
     // useEffect(()=>{})               : 생성 , 업데이트
     // useEffect(()=>{},[])            : 생성될 때 1번
@@ -97,3 +112,12 @@ export default function List(props) {
             //console.log(e.target.value);        // button 이라서 value 속성 없음 x
             //console.log(e.target.innerHTML ); // 해당 button 에서 안에 작성된 html 호출
             //console.log(e.target.outerText ); // 해당 button 에서 밖으로 출력되는 text 호출
+
+                        // const 상수 vs let 변수
+                        // const 쓰는 이유...?
+                    const onSearch = ()=>{}
+                    onSearch = () => {} // X
+
+                    let onSearch2 = ()=>{}
+                    onSearch2 = () => {} // O
+*/
