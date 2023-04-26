@@ -54,15 +54,22 @@ public class BoardController {
     }
     // 수정
     @PutMapping("")
-    public boolean put(  ){  return true;  }
+    public boolean put(@RequestBody BoardDto boardDto  ){
+        boolean result = boardService.update( boardDto );
+        return result;  }
     // 삭제
     @DeleteMapping("")
-    public boolean delete(  ){  return true;  }
+    public boolean delete( @RequestParam int bno  ){
+        boolean result = boardService.delete( bno );
+        return result;
+    }
 
     // 개별 출력
     @GetMapping("/getboard")
-    public BoardDto getboard(  int bno ){  return null;  }
-
+    public BoardDto getboard( @RequestParam int bno ){
+        BoardDto result = boardService.getboard( bno) ;
+        return result;
+    }
 
     // 5. 내가 쓴 게시물 출력
     @GetMapping("/myboards")

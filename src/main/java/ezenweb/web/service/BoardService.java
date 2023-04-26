@@ -95,8 +95,13 @@ public class BoardService {
         pageDto.setTotalCount(entityPage.getTotalElements() );
         return pageDto;
     }
-
-    // 5. 내가 쓴 게시물 출력
+    // 5.
+    public BoardDto getboard( int bno ){
+        Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById( bno );
+        if( optionalBoardEntity.isPresent() ){  return optionalBoardEntity.get().toDto();    }
+        return null;
+    }
+    // 6. 내가 쓴 게시물 출력
     public List<BoardDto> myboards( ){log.info("s myboards : " );
         // 1. 로그인 인증 세션[object] --> dto 강제형변환
         MemberDto memberDto = (MemberDto)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -109,5 +114,28 @@ public class BoardService {
             list.add( e.toDto() );
         });
         return list;
+    }
+
+    // 7.
+    public boolean delete( int bno  ){
+        Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById( bno );
+        if( optionalBoardEntity.isPresent() ){
+            boardEntityRepository.delete( optionalBoardEntity.get() );
+            return true;
+        }
+        return false;
+    }
+
+    // 8.
+    @Transactional
+    public boolean update(BoardDto boardDto){
+        Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById(boardDto.getBno());
+        if(optionalBoardEntity.isPresent()){
+            BoardEntity boardEntity = optionalBoardEntity.get();
+                boardEntity.setBtitle(boardDto.getBtitle());
+                boardEntity.setBcontent(boardDto.getBcontent());
+                return true;
+        }
+        return false;
     }
 }
