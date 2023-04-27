@@ -83,7 +83,7 @@ public class BoardController {
     @PostMapping("/reply")
     public boolean postReply(@RequestBody ReplyDto replyDto){ log.info("postReply : " + replyDto);
         boolean result = boardService.postReply(replyDto);
-        return true;
+        return result;
     }
     // 10. 댓글 출력 [r] X
     @GetMapping("/reply")
@@ -94,12 +94,12 @@ public class BoardController {
     @PutMapping("/reply")
     public boolean putReply(@RequestBody ReplyDto replyDto){ log.info("putReply : " + replyDto);
         boolean result = boardService.putReply(replyDto);
-        return true;
+        return result;
     }
     // 12 댓글 삭제 [d]
     @DeleteMapping("/reply")
     public boolean deleteReply(@RequestParam int rno){ log.info("deleteReply : " + rno);
         boolean result = boardService.deleteReply(rno);
-        return true;
+        return result;
     }
 }

@@ -162,7 +162,7 @@ public class BoardService {
 
         // 0. 댓글 작성할 게시물 호출
         Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById(replyDto.getBno());
-        if(optionalBoardEntity.isPresent()){return false;}
+        if(!optionalBoardEntity.isPresent()){return false;}
         BoardEntity boardEntity = optionalBoardEntity.get();
 
         // 1. 댓글 작성한다.
