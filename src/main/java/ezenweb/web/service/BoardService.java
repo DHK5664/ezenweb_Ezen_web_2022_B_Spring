@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -95,10 +96,21 @@ public class BoardService {
         pageDto.setTotalCount(entityPage.getTotalElements() );
         return pageDto;
     }
-    // 5.
+    // 5. 게시물 개별 조회/출력 + 댓글 출력
     public BoardDto getboard( int bno ){
         Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById( bno );
-        if( optionalBoardEntity.isPresent() ){  return optionalBoardEntity.get().toDto();    }
+        if( optionalBoardEntity.isPresent() ){  // 게시물 출력시 현재 게시물의 댓글도 같이~~ 출력
+            BoardEntity entity = optionalBoardEntity.get();
+            // 댓글 같이~~ 형변환 [ toDto vs 서비스 ]
+            List<ReplyDto> list = new ArrayList<>();
+            entity.getReplyEntityList().forEach((r)->{
+                list.add(r.todto());
+            });
+            BoardDto boardDto = entity.toDto();
+            boardDto.setReplyDtoList(list);
+            return boardDto;
+        }
+
         return null;
     }
     // 6. 내가 쓴 게시물 출력
@@ -135,6 +147,57 @@ public class BoardService {
                 boardEntity.setBtitle(boardDto.getBtitle());
                 boardEntity.setBcontent(boardDto.getBcontent());
                 return true;
+        }
+        return false;
+    }
+    @Autowired
+    private ReplyEntityRepository replyEntityRepository;
+    @Transactional
+    public boolean postReply(@RequestBody ReplyDto replyDto){ log.info("postReply : " + replyDto);
+        // 0. 로그인 했는지
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(o.equals("anonymousUser")){return false;}
+        MemberDto memberDto = (MemberDto)o;
+        MemberEntity memberEntity = memberEntityRepository.findById(memberDto.getMno()).get();
+
+        // 0. 댓글 작성할 게시물 호출
+        Optional<BoardEntity> optionalBoardEntity = boardEntityRepository.findById(replyDto.getBno());
+        if(optionalBoardEntity.isPresent()){return false;}
+        BoardEntity boardEntity = optionalBoardEntity.get();
+
+        // 1. 댓글 작성한다.
+        ReplyEntity replyEntity = replyEntityRepository.save(replyDto.toEntity());
+        if(replyEntity.getRno() <1) {return false;}
+        
+        // 2. 댓글과 회원의 양방향 관계[ 댓글->회원 / 회원->댓글 == 양방향 , 댓글->회원 == 단방향 ]
+        replyEntity.setMemberEntity( memberEntity );
+        memberEntity.getReplyEntityList().add(replyEntity);
+        // 3. 댓글과 게시물의 양방향 관계 [ 댓글->게시물 / 게시물->댓글 == 양방향 , 댓글->게시물 == 단방향]
+        replyEntity.setBoardEntity(optionalBoardEntity.get());
+        boardEntity.getReplyEntityList().add(replyEntity);
+
+        return true;
+    }
+    @Transactional
+    public boolean getReply(){ // 게시물 출력 시 대체
+        return true;
+    }
+    @Transactional
+    public boolean putReply(@RequestBody ReplyDto replyDto){ log.info("putReply : " + replyDto);
+        // {rno : "수정할 번호" , rcontent : "수정할 내용"}
+        Optional<ReplyEntity> optionalReplyEntity = replyEntityRepository.findById(replyDto.getRno());
+        if(optionalReplyEntity.isPresent()){
+            optionalReplyEntity.get().setRcontent(replyDto.getRcontent());
+            return true;
+        }
+        return false;
+    }
+    @Transactional
+    public boolean deleteReply(@RequestParam int rno){ log.info("deleteReply : " + rno);
+        Optional<ReplyEntity> optionalReplyEntity = replyEntityRepository.findById(rno);
+        if(optionalReplyEntity.isPresent()){
+            replyEntityRepository.delete(optionalReplyEntity.get());
+            return true;
         }
         return false;
     }
