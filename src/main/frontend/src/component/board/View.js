@@ -5,51 +5,76 @@ import {useParams} from 'react-router-dom'; // HTTP 경로 상의 매개변수 �
 import ReplyList from './ReplyList'
 
 export default function View(props) {
-   const params = useParams();
 
-   const [ board , setBoard ] = useState( {} );
-   useEffect( ()=>{
+   const params = useParams();
+   const [ board , setBoard ] = useState( {
+        replyDtoList : []
+   } );
+
+   // 1. 현재 게시물 가져오는 ajax 함수
+   const getBoard = ()=>{
         axios.get("/board/getboard" , { params : { bno : params.bno }})
             .then( (r) => {
                 console.log( r.data );
                 setBoard( r.data );
-
             })
-   } , [] ) // setBoard() 할때마다 실행되는 useEffect
+   }
+    // 2. 컴포넌트 처음 열렸을때
+    useEffect(()=>{getBoard();},[]);
 
-    // 삭제 함수
+    // 3. 게시물 삭제 함수
      const onDelete = () =>{
            axios.delete("/board" , { params : { bno : params.bno }})
                .then( r => {
                    console.log( r.data );
-                   if( r.data == true ){
+                   if( r.data == true){
                        alert('삭제 성공 ');
                        window.location.href="/board/list";
                    }else{ alert('삭제 실패')}
                })
       }
 
-   // 수정 페이지 이동 함수
+   // 3. 수정 페이지 이동 함수
    const onUpdate = () => { window.location.href="/board/update?bno="+board.bno }
 
    const [ login , setLogin ] = useState( JSON.parse( sessionStorage.getItem('login_token') ) )
 
-   // 2. 댓글 작성시 렌더링
+   // 4. 댓글 작성시 렌더링
        const onReplyWrite = (rcontent) =>{
            let info ={ rcontent : rcontent , bno : board.bno };
            console.log(info);
            axios.post("/board/reply" , info)
                .then( (r)=>{
                    if(r.data == true){
-                       alert("글쓰기 완료")
-                       setBoard( r.data );
-                        console.log( board  );
-                        console.log( board.replyDtoList  );
+                       alert("글쓰기 완료"); getBoard();
                    }else{
                        alert('로그인 후 가능 합니다.')
                    }
                });
        }
+   // 5. 댓글 삭제 렌더링
+   const onReplyDelete = (rno) =>{
+       console.log(rno);
+       axios.delete("/board/reply" , {params : {"rno":rno}})
+           .then( r=>{
+                if(r.data==true){
+                    alert("댓글 삭제"); getBoard();
+                }else{alert('본인 댓글만 삭제 쌉가능');}
+           })
+   }
+
+   // 6. 댓글 수정 렌더링
+   const onReplyUpdate = (uprContent , rno) =>{
+        let info = {rcontent : uprContent , rno : rno}
+        console.log(info);
+        axios.put("/board/reply" , info)
+            .then( r=>{
+                console.log(r.data)
+                if(r.data==true){
+                    alert('수정 완료'); getBoard();
+                }else{alert('본인 댓글만 수정 쌉가능')}
+            })
+   }
 
    // 1. 현재 로그인된 회원이 들어왔으면
    const btnBox =
@@ -62,7 +87,11 @@ export default function View(props) {
         <div>
             <h3> { board.btitle } </h3> <h3> {board.bcontent} </h3> { btnBox }
         </div>
-        <ReplyList onReplyWrite={onReplyWrite}  replyDtoList = { board.replyDtoList }  />
+        <ReplyList
+        onReplyDelete={onReplyDelete}
+        onReplyWrite={onReplyWrite}
+        onReplyUpdate={onReplyUpdate}
+        replyList = { board.replyDtoList }  />
    </>)
 }
 /*
