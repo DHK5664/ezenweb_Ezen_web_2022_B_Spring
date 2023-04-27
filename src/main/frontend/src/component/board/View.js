@@ -2,6 +2,8 @@ import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import {useParams} from 'react-router-dom'; // HTTP 경로 상의 매개변수 호출 해주는 함수
 
+import ReplyList from './ReplyList'
+
 export default function View(props) {
    const params = useParams();
 
@@ -11,8 +13,9 @@ export default function View(props) {
             .then( (r) => {
                 console.log( r.data );
                 setBoard( r.data );
+
             })
-   } , [ ] )
+   } , [] ) // setBoard() 할때마다 실행되는 useEffect
 
     // 삭제 함수
      const onDelete = () =>{
@@ -31,6 +34,23 @@ export default function View(props) {
 
    const [ login , setLogin ] = useState( JSON.parse( sessionStorage.getItem('login_token') ) )
 
+   // 2. 댓글 작성시 렌더링
+       const onReplyWrite = (rcontent) =>{
+           let info ={ rcontent : rcontent , bno : board.bno };
+           console.log(info);
+           axios.post("/board/reply" , info)
+               .then( (r)=>{
+                   if(r.data == true){
+                       alert("글쓰기 완료")
+                       setBoard( r.data );
+                        console.log( board  );
+                        console.log( board.replyDtoList  );
+                   }else{
+                       alert('로그인 후 가능 합니다.')
+                   }
+               });
+       }
+
    // 1. 현재 로그인된 회원이 들어왔으면
    const btnBox =
                 login != null && login.mno == board.mno
@@ -40,10 +60,9 @@ export default function View(props) {
 
    return ( <>
         <div>
-            <h3> { board.btitle } </h3>
-            <h3> {board.bcontent} </h3>
-            { btnBox }
+            <h3> { board.btitle } </h3> <h3> {board.bcontent} </h3> { btnBox }
         </div>
+        <ReplyList onReplyWrite={onReplyWrite}  replyDtoList = { board.replyDtoList }  />
    </>)
 }
 /*
