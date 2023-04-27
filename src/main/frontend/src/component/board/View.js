@@ -36,9 +36,8 @@ export default function View(props) {
 
    // 3. 수정 페이지 이동 함수
    const onUpdate = () => { window.location.href="/board/update?bno="+board.bno }
-
    const [ login , setLogin ] = useState( JSON.parse( sessionStorage.getItem('login_token') ) )
-
+    console.log( login)
    // 4. 댓글 작성시 렌더링
        const onReplyWrite = (rcontent) =>{
            let info ={ rcontent : rcontent , bno : board.bno };
@@ -55,11 +54,12 @@ export default function View(props) {
    // 5. 댓글 삭제 렌더링
    const onReplyDelete = (rno) =>{
        console.log(rno);
+       if(login.mno == board.mno){
+           getBoard();
+       }else{alert('본인 댓글만 삭제 쌉가능'); return;}
        axios.delete("/board/reply" , {params : {"rno":rno}})
-           .then( r=>{
-                if(r.data==true){
-                    alert("댓글 삭제"); getBoard();
-                }else{alert('본인 댓글만 삭제 쌉가능');}
+           .then( r=>{alert('삭제완료'); getBoard();
+
            })
    }
 
@@ -67,12 +67,12 @@ export default function View(props) {
    const onReplyUpdate = (uprContent , rno) =>{
         let info = {rcontent : uprContent , rno : rno}
         console.log(info);
+         if(login.mno == board.mno){
+                   getBoard();
+        }else{alert('본인 댓글만 수정 쌉가능'); return;}
         axios.put("/board/reply" , info)
-            .then( r=>{
-                console.log(r.data)
-                if(r.data==true){
-                    alert('수정 완료'); getBoard();
-                }else{alert('본인 댓글만 수정 쌉가능')}
+            .then( r=>{ alert('수정완료'); getBoard();
+
             })
    }
 

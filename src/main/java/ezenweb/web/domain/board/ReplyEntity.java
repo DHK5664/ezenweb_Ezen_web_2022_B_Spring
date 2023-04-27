@@ -23,7 +23,7 @@ public class ReplyEntity extends BaseTime {
     public ReplyDto todto(){
         return ReplyDto.builder()
                 .rno(this.rno).rcontent(this.rcontent)
-                .rdate(this.cdate.toLocalDate().toString())
+                .rdate(this.cdate.toLocalDate().toString()).mno(this.getMemberEntity().getMno())
                 // cdate[LocalDateTime] rdate[String] 왜?? <--> 형변환 시 LocalDateTime에 대해서는 형변환이 안됨 (objectMapper)에서
                 .build();
     }
