@@ -21,7 +21,7 @@ let [mphoneMsg , setMphoneMsg] = useState();
         .then(r=>{
             console.log(r);
             if(r.data == true){
-                alert('회원가입 성공');window.location.href="/login"; //window.location.href="이동할 경로"
+                alert('회원가입 성공');window.location.href="/member/login"; //window.location.href="이동할 경로"
             }else{
                 alert('가입 실패 [ 관리자에게 문의 ]')
             }
