@@ -13,6 +13,8 @@ public class ReplyEntity extends BaseTime {
     private int rno;
     @Column
     private String rcontent;
+    @Column
+    private int rindex;
     // 작성자fk
     @ManyToOne @JoinColumn(name = "mno") @ToString.Exclude
     private MemberEntity memberEntity;
@@ -24,6 +26,9 @@ public class ReplyEntity extends BaseTime {
         return ReplyDto.builder()
                 .rno(this.rno).rcontent(this.rcontent)
                 .rdate(this.cdate.toLocalDate().toString()).mno(this.getMemberEntity().getMno())
+                .mname(this.memberEntity.getMname())
+                .rindex(this.rindex)
+                // .rereplyDtoList(Dto.List)
                 // cdate[LocalDateTime] rdate[String] 왜?? <--> 형변환 시 LocalDateTime에 대해서는 형변환이 안됨 (objectMapper)에서
                 .build();
     }

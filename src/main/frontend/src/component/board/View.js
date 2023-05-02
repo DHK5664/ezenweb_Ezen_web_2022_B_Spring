@@ -4,6 +4,8 @@ import {useParams} from 'react-router-dom'; // HTTP 경로 상의 매개변수 �
 
 import ReplyList from './ReplyList'
 
+import Container from '@mui/material/Container';
+
 export default function View(props) {
 
    const params = useParams();
@@ -11,7 +13,7 @@ export default function View(props) {
         replyDtoList : []
    } );
 
-   // 1. 현재 게시물 가져오는 ajax 함수
+   // 1. 현재 게시물 가져오는 axios 함수
    const getBoard = ()=>{
         axios.get("/board/getboard" , { params : { bno : params.bno }})
             .then( (r) => {
@@ -19,7 +21,7 @@ export default function View(props) {
                 setBoard( r.data );
             })
    }
-    // 2. 컴포넌트 처음 열렸을때
+    // 2. 컴포넌트 처음 열렸을때 getBoard 실행
     useEffect(()=>{getBoard();},[]);
 
     // 3. 게시물 삭제 함수
@@ -34,13 +36,13 @@ export default function View(props) {
                })
       }
 
-   // 3. 수정 페이지 이동 함수
+   // 4. 수정 페이지 이동 함수
    const onUpdate = () => { window.location.href="/board/update?bno="+board.bno }
    const [ login , setLogin ] = useState( JSON.parse( sessionStorage.getItem('login_token') ) )
-    console.log( login)
-   // 4. 댓글 작성시 렌더링
-       const onReplyWrite = (rcontent) =>{
-           let info ={ rcontent : rcontent , bno : board.bno };
+
+ // 5. 댓글 작성시 랜더링
+   const onReplyWrite = ( rcontent , rindex  ) =>{
+           let info = {  rcontent : rcontent,  bno : board.bno , rindex : rindex }; console.log( info );
            console.log(info);
            axios.post("/board/reply" , info)
                .then( (r)=>{
@@ -51,7 +53,7 @@ export default function View(props) {
                    }
                });
        }
-   // 5. 댓글 삭제 렌더링
+   // 6. 댓글 삭제 렌더링
    const onReplyDelete = (rno) =>{
        console.log(rno);
        if(login.mno == board.mno){
@@ -63,17 +65,15 @@ export default function View(props) {
            })
    }
 
-   // 6. 댓글 수정 렌더링
-   const onReplyUpdate = (uprContent , rno) =>{
-        let info = {rcontent : uprContent , rno : rno}
-        console.log(info);
-         if(login.mno == board.mno){
-                   getBoard();
-        }else{alert('본인 댓글만 수정 쌉가능'); return;}
-        axios.put("/board/reply" , info)
-            .then( r=>{ alert('수정완료'); getBoard();
-
-            })
+   // 7. 댓글 수정 렌더링
+   const onReplyUpdate = (rno,rcontent)=>{
+        let info = {rno : rno , rcontent : rcontent}
+        axios.put('/board/reply' , info)
+            .then(r=>{
+                if(r.data==true){
+                    alert('댓글 수정 완료'); getBoard();
+                }else{alert('본인 댓글만 수정 할 수 있습니다.');}
+        })
    }
 
    // 1. 현재 로그인된 회원이 들어왔으면
@@ -83,16 +83,17 @@ export default function View(props) {
                         <button onClick={onUpdate}>수정</button> </div>
                 : <div> </div>
 
-   return ( <>
+   return (
+   <Container>
         <div>
             <h3> { board.btitle } </h3> <h3> {board.bcontent} </h3> { btnBox }
         </div>
         <ReplyList
-        onReplyDelete={onReplyDelete}
-        onReplyWrite={onReplyWrite}
-        onReplyUpdate={onReplyUpdate}
+            onReplyDelete={onReplyDelete}
+            onReplyWrite={onReplyWrite}
+            onReplyUpdate={onReplyUpdate}
         replyList = { board.replyDtoList }  />
-   </>)
+   </Container>)
 }
 /*
         // useParams() 훅 : 경로[URL] 상의 매개변수[객체] 반환

@@ -1,6 +1,17 @@
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
+import ReplyInput from './ReplyInput';
+import styles from '../../css/board/board.css';
+
 export default function ReplyList(props) {
+
+    const [ login , setLogin ] = useState( JSON.parse( sessionStorage.getItem('login_token') ) )
+
+    // props 으로 부터전달 받은 댓글 리스트 관리하는 상태변수
+    let [ replyList , setReplyList ] = useState( [] );
+    // props 변경 되었을때 [  view.js axios 실행 ]
+    useEffect( () => { setReplyList( props.replyList ) } , [props.replyList] )
+
     // 1. 댓글 작성 핸들러
     const onWriteHandler = () =>{
         props.onReplyWrite(document.querySelector('.rcontent').value);
@@ -11,40 +22,102 @@ export default function ReplyList(props) {
         console.log('삭제' + rno);
         props.onReplyDelete(rno); // props 전달받은 삭제함수 실행
     }
+    // 3. 답글핸들러
+    const onRereplyHandler=(e,rno)=>{
+        console.log('답글' + rno);
+
+        replyList.forEach((r,i)=>{
+            //전체 댓글 번호중에 본인 선택한 댓글번호와 같으면
+            if(r.rno==rno){
+                if( r.cusHTML == '' || r.cusHTML == undefined){
+                    //새로운 필드에 새로운 html 구성
+                    replyList[i].cusHTML = <div>
+                        {/* 답글 댓글 [ rindex= 본인 선택한 댓글 = 답글을 작성할 [부모] ] */}
+                        <ReplyInput onReplyWrite = {props.onReplyWrite} rindex = {rno}/>
+                            {/*답글 출력*/}
+                            {
+                                r.rereplyDtoList.map((rr)=>{
+                                    return(<>
+                                        <span> { rr.rcontent } </span>
+                                        <span> { rr.rdate } </span>
+                                        <button onClick={ (e)=>onDeleteHandler( e , rr.rno ) } >수정</button>
+                                        <button onClick={ (e)=>onDeleteHandler( e , rr.rno ) } >삭제</button>
+                                    </>)
+                                })
+                            }
+                  </div>
+                }else{ // 해당 답글 구역 숨기기
+                    replyList[i].cusHTML = ''
+                }
+            }
+        });
+        setReplyList( [...replyList] );
+
+    }
+    // 4. 수정 핸들러
+    const onUpdateHandler = (e,rno,i) =>{
+        // Rcontent 읽기모드 해제
+        if(replyList[i].readOnly == true){
+            replyList[i].readOnly = false; alert('수정 후 완료 버튼을 눌러주세요')
+        }else{// Rcontent 읽기모드 적용
+            replyList[i].readOnly = true;
+            // 수정처리
+            props.onReplyUpdate(rno,replyList[i].rcontent)
+        }
+        setReplyList([...replyList])
+    }
+    // 5. 댓글 내용 수정
+    const onRcontentChange = (e , rno , i)=>{
+        replyList[i].rcontent = e.target.value;
+        setReplyList([...replyList])
+    }
+
+    return (<>
+        { /* 상위 댓글[ rindex=0 ] 작성하는 input */ }
+        <ReplyInput
+            onReplyWrite = { props.onReplyWrite }
+            rindex = {0}
+        />
+        <div className="replyCount"> 전체 댓글 : {replyList.length} 개 </div>
+        {
+             replyList.map( (r,i)=>{
+                {/* rcontent 읽기모드 설정값 저장하는 [r.readOnly]필드 만들기 */}
+                if(r.readOnly == undefined){r.readOnly = true;}
+                return(
+                    <div className="replyBox">
+                        <span className="replyMname"> { r.mname } </span>
+                        <span className="replyRdate"> { r.rdate } </span>
+                        <input value={r.rcontent} className="replyRcontent" onChange={(e)=>onRcontentChange(e,r.rno,i)} readOnly={r.readOnly} />
+                        <div className="replyBtn">
+                            <button onClick={ (e)=>onRereplyHandler( e , r.rno ) } >답글</button>
+                            { login != null && login.mno == r.mno
+                                ?
+                                    <>
+                                        <button onClick={ (e)=>onUpdateHandler( e , r.rno ,i) } >
+                                        {r.readOnly == true ? '수정' : '수정완료' }
+                                        </button>
+                                        <button onClick={ (e)=>onDeleteHandler( e , r.rno ) } >삭제</button>
+                                    </>
+                                :
+                                <></>
+                            }
+
+                        </div>
+                        { r.cusHTML } { /* API 없던 필드 */}
+                    </div>)
+            })
+        }
+    </>)
+
+
+
 
     // 번외 수정 칸 보이기
     function onUpdateBox(e,rno){
         document.querySelector('.rUpdateBox'+rno).style.display='block';
     }
 
-    // 3. 수정 핸들러
-    const onReplyUpdate = (e,rno) =>{
-        console.log('수정'+rno);
-        props.onReplyUpdate(document.querySelector('.uprContent'+rno).value,rno);
-        document.querySelector('.uprContent'+rno).value='';
-        document.querySelector('.rUpdateBox'+rno).style.display='none';
-    }
 
-    return (<>
-        <input className="rcontent" type="text"/> <button onClick={onWriteHandler}> 댓글작성 </button>
-        <h6> 댓글 목록 </h6>
-        {
-            props.replyList.map((r)=>{
-                return (<div>
-                            <span>{r.rcontent}</span>
-                            <span>{r.rdate}</span>
-                            <div className={ 'rUpdateBox'+(r.rno ) } style={{display:'none'}}>
-                                <input className={ 'uprContent'+(r.rno ) } type="text"/>
-                                <button onClick={(e)=>onReplyUpdate(e,r.rno)}> 댓글 수정 </button>
-                            </div>
-                            {
-                                /* JSX 형식에서 함수에 매개변수 전달 */
-                                /* <마크업 이벤트 = { (e)=>{ 함수명( e , 매개변수 ) } } /> */
-                            }
-                            <button onClick={(e)=>onDeleteHandler(e,r.rno)}> 삭제 </button>
-                            <button onClick={(e)=>onUpdateBox(e,r.rno)}> 수정 </button>
-                        </div>)
-            })
-        }
-    </>)
+
+
 }
