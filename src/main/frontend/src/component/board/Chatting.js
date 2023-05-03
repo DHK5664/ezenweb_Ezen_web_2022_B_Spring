@@ -1,23 +1,24 @@
 import React,{useEffect,useState,useRef} from 'react'
 import Container from '@mui/material/Container';
+import styles from '../../css/board/Chatting.css'
 
 export default function Chatting(props) {
 
     let [id,setId] = useState('');   // 익명채팅에서 사용할 id [ 난수 저장 ]
     let [msgContent , setMsgContent] = useState([]); // 현재 채팅중인 메시지를 저장하는 변수
     let msgInput = useRef(null);    // 채팅입력창[input] DOM객체 제어 변수
+    let chatContentsBox = useRef(null);
 
     // 1. 재랜더링 될때마다 새로운 접속
     // let 클라이언트소켓 = new WebSocket("ws://localhost:8080/chat");
     // 2. 재렌더링 될때 데이터 상태 유지
-    let ws = useRef(null);
-    useEffect(()=>{
-        if(!ws.current){// 만약에 클라이언트소켓이 접속이 안되어있을때.
-            ws = new WebSocket("ws://localhost:8080/chat"); // 서버소켓에 접속
+    let ws = useRef(null);  // 1. 모든 함수 사용할 클라이언트소켓 변수
+    useEffect(()=>{         // 2. 컴포넌트 실행시 1번만 실행
+        if(!ws.current){    // 3. 만약에 클라이언트소켓이 접속이 안되어있을때.  [* 유효성검사]
+            ws.current = new WebSocket("ws://localhost:8080/chat"); // 4. 서버소켓에 접속
             // 3.서버소켓에 접속했을때 이벤트
             ws.current.onopen = () => {console.log('접속했습니다.');
-                let randId = Math.floor( Math.random() * ( 9999 - 1 ) + 1 );
-                setId('익명' + randId);
+                let randId = Math.floor( Math.random() * ( 9999 - 1 ) + 1 );    setId('익명' + randId);
             }
             // 3. 서버소켓에서 나갔을때 이벤트
             ws.current.onclose = (e) => {console.log('서버 나갔습니다.');}
@@ -47,19 +48,30 @@ export default function Chatting(props) {
         msgInput.current.value = '';
     }
 
+    // 5. 메세지 받기 렌더링 할 떄마다 스크롤 가장 하단으로 내리기
+    useEffect (()=>{
+        document.querySelector('.chatContentsBox').scrollTop = document.querySelector('.chatContentsBox').scrollHeight;
+    },[msgContent])
+
     return (<>
         <Container>
-            <h6>익명 채팅방</h6>
             <div className="chatContentsBox">
             {
                 msgContent.map((m)=>{
-                    return(<><div> { m } </div></>)
-                })
+                    return(<>
+                        {/* 조건 스타일링 : style={ 조건 ? { 참일경우 } : { 거짓일 경우 } } */}
+                        <div className="chatContent" style={ m.id == id ? { backgroundColor : '#d46e6e' } : { } } >
+                            <span> { m.id } </span>
+                            <span> { m.time } </span>
+                            <span> { m.msg } </span>
+                        </div>
+                        </>)
+                    })
             }
             </div>
             <div className="chatInputBox">
                 <span> {id} </span>
-                <input ref={ msgInput } type="text" />
+                <input className="msgInput" ref={ msgInput } type="text" />
                 <button onClick={ onSend }>전송</button>
             </div>
         </Container>
