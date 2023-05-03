@@ -13,26 +13,30 @@ import DashBoard from "./admin/DashBoard"
 import Write from "./board/Write"
 import View from "./board/View"
 import Update from "./board/Update"
+import Chatting from "./board/Chatting"
 
 
 
 export default function Index(props) {
     return (<>
         <BrowserRouter>
-            <Header />
+            <Header/>
             <Routes>
-                <Route path="/" element={ <Main /> } />
-                <Route path="/member/login" element={ <Login /> } />
-                <Route path="/member/signup" element={ <Signup /> } />
-                <Route path="/member/find" element={ <Find /> } />
-                <Route path="/board/list" element={ <List /> } />
-                <Route path="/board/write" element={ <Write /> } />
-                <Route path="/board/view/:bno" element={ <View /> } />
+                <Route path="/" element={ <Main/> } />
+                <Route path="/member/login" element={ <Login/> } />
+                <Route path="/member/signup" element={ <Signup/> } />
+                <Route path="/member/find" element={ <Find/> } />
+
+                <Route path="/board/list" element={ <List/> } />
+                <Route path="/board/write" element={ <Write/> } />
+                <Route path="/board/view/:bno" element={ <View/> } />
                 <Route path="/board/update" element = { <Update/> } />
 
-                <Route path="/admin/dashboard" element={ <DashBoard /> } />
+                <Route path="/chatting/home" element = { <Chatting/> } />
+
+                <Route path="/admin/dashboard" element={ <DashBoard/> } />
             </Routes>
-            <Footer />
+            <Footer/>
         </BrowserRouter>
     </> )
 }
