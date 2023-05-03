@@ -2,10 +2,12 @@ package ezenweb.web.socket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-@Configuration // 컴포넌트 등록
+@Configuration // 설정 컴포넌트 등록
+@EnableWebSocket // * WS 프로토콜의 URL 매핑 연결
 public class WebSocketConfiguration implements WebSocketConfigurer{
 
     @Autowired // 컴포넌트에 등록한 클래스 이므로 @Autowired 사용 가능 [DI]
