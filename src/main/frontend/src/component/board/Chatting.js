@@ -1,4 +1,5 @@
 import React,{useEffect,useState,useRef} from 'react'
+import axios from 'axios'
 import Container from '@mui/material/Container';
 import styles from '../../css/board/Chatting.css'
 
@@ -7,7 +8,8 @@ export default function Chatting(props) {
     let [id,setId] = useState('');   // 익명채팅에서 사용할 id [ 난수 저장 ]
     let [msgContent , setMsgContent] = useState([]); // 현재 채팅중인 메시지를 저장하는 변수
     let msgInput = useRef(null);    // 채팅입력창[input] DOM객체 제어 변수
-    let chatContentsBox = useRef(null);
+    let fileForm = useRef(null);
+    let fileInput = useRef(null);
 
     // 1. 재랜더링 될때마다 새로운 접속
     // let 클라이언트소켓 = new WebSocket("ws://localhost:8080/chat");
@@ -34,18 +36,37 @@ export default function Chatting(props) {
         }
     })
 
-
-
     // 4. 메시지 전송
     const onSend = () =>{
         // msgInput변수가 참조중인 <input ref={ msgInput } /> 해당 input 을 DOM객체로 호출
+        // 1. 메시지 전송
         let msgBox = {
             id : id, // 보낸사람
             msg : msgInput.current.value, // 보낸내용
-            time :new Date().toLocaleTimeString() // 현재 시간만
+            time :new Date().toLocaleTimeString(), // 현재 시간만
+            type : 'msg'
         }
-        ws.current.send( JSON.stringify(msgBox) );    // 클라이언트가 서버에게 메시지 전송 [ .send() ]
-        msgInput.current.value = '';
+        if(msgBox.msg !=''){
+                ws.current.send( JSON.stringify(msgBox) );    // 클라이언트가 서버에게 메시지 전송 [ .send() ]
+                msgInput.current.value = '';
+        }
+        // 2.첨부파일 전송 [axios 이용한 서버에게 첨부파일 업로드]
+        if(fileInput.current.value !=''){ // 첨부파일 존재하면
+            axios.post("/chat/fileupload" , new FormData(fileForm.current) )
+                .then(r=>{
+                    console.log(r.data)
+                    // 다른 소켓들에게 업로드 결과 전달
+                    let msgBox = {
+                                id : id, // 보낸사람
+                                msg : msgInput.current.value, // 보낸내용
+                                time :new Date().toLocaleTimeString(), // 현재 시간만
+                                type : 'file' ,
+                                fileInfo : r.data // 업로드 후 응답받은 파일정보
+                            }
+                            ws.current.send( JSON.stringify(msgBox) );
+                            fileInput.current.value = '';
+                } );
+        }
     }
 
     // 5. 메세지 받기 렌더링 할 떄마다 스크롤 가장 하단으로 내리기
@@ -63,7 +84,17 @@ export default function Chatting(props) {
                         <div className="chatContent" style={ m.id == id ? { backgroundColor : '#d46e6e' } : { } } >
                             <span> { m.id } </span>
                             <span> { m.time } </span>
-                            <span> { m.msg } </span>
+                            {
+                                m.type == 'msg' ? <span> { m.msg } </span>
+                                : (<>
+                                    <span>
+                                        <span> {m.fileInfo.originalFilename} </span>
+                                        <span> {m.fileInfo.sizeKb} </span>
+                                        <span> <a href = {"/chat/filedownload?uuidFile="+m.fileInfo.uuidFile} >저장</a> </span>
+                                    </span>
+                                </>)
+                            }
+
                         </div>
                         </>)
                     })
@@ -73,6 +104,9 @@ export default function Chatting(props) {
                 <span> {id} </span>
                 <input className="msgInput" ref={ msgInput } type="text" />
                 <button onClick={ onSend }>전송</button>
+                <form ref={fileForm}>
+                    <input ref={fileInput} type="file" name="attachFile"/>
+                </form>
             </div>
         </Container>
     </>)
