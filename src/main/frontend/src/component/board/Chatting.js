@@ -10,6 +10,7 @@ export default function Chatting(props) {
     let msgInput = useRef(null);    // 채팅입력창[input] DOM객체 제어 변수
     let fileForm = useRef(null);
     let fileInput = useRef(null);
+    let chatContentsBox = useRef(null);
 
     // 1. 재랜더링 될때마다 새로운 접속
     // let 클라이언트소켓 = new WebSocket("ws://localhost:8080/chat");
@@ -52,20 +53,8 @@ export default function Chatting(props) {
         }
         // 2.첨부파일 전송 [axios 이용한 서버에게 첨부파일 업로드]
         if(fileInput.current.value !=''){ // 첨부파일 존재하면
-            axios.post("/chat/fileupload" , new FormData(fileForm.current) )
-                .then(r=>{
-                    console.log(r.data)
-                    // 다른 소켓들에게 업로드 결과 전달
-                    let msgBox = {
-                                id : id, // 보낸사람
-                                msg : msgInput.current.value, // 보낸내용
-                                time :new Date().toLocaleTimeString(), // 현재 시간만
-                                type : 'file' ,
-                                fileInfo : r.data // 업로드 후 응답받은 파일정보
-                            }
-                            ws.current.send( JSON.stringify(msgBox) );
-                            fileInput.current.value = '';
-                } );
+            let formData = new FormData(fileForm.current)
+            fileAxios(formData) // 파일전송
         }
     }
 
@@ -74,9 +63,55 @@ export default function Chatting(props) {
         document.querySelector('.chatContentsBox').scrollTop = document.querySelector('.chatContentsBox').scrollHeight;
     },[msgContent])
 
+    // 6. 파일 전송 axios
+    const fileAxios = (formData)=>{
+        axios.post("/chat/fileupload" , formData )
+            .then(r=>{
+                console.log(r.data)
+                // 다른 소켓들에게 업로드 결과 전달
+                let msgBox = {
+                            id : id, // 보낸사람
+                            msg : msgInput.current.value, // 보낸내용
+                            time :new Date().toLocaleTimeString(), // 현재 시간만
+                            type : 'file' ,
+                            fileInfo : r.data // 업로드 후 응답받은 파일정보
+                        }
+                        ws.current.send( JSON.stringify(msgBox) );
+                        fileInput.current.value = '';
+            } );
+    }
+
     return (<>
         <Container>
-            <div className="chatContentsBox">
+            <div
+                className="chatContentsBox"
+                onDragEnter={(e)=>{console.log('onDragEnter');
+                    e.preventDefault(); {/* 상위 이벤트 제거 */}
+                } }
+                onDragOver={(e)=>{console.log('onDragOver');
+                    e.preventDefault(); {/* 상위 이벤트 제거 */}
+                    e.target.style.backgroundColor = '#e8e8e8';
+                } }
+                onDragLeave={(e)=>{console.log('onDragLeave');
+                    e.preventDefault(); {/* 상위 이벤트 제거 */}
+                    e.target.style.backgroundColor = '#ffffff';
+                } }
+                onDrop={(e)=>{console.log('onDrop');
+                    e.preventDefault(); {/* 상위 이벤트 제거 */}
+                    {/* 드랍된 파일들 호출 = e.dataTransfer.files; */}
+                    let files = e.dataTransfer.files;
+                    for(let i = 0 ; i <files.length ; i++) {
+                        {/*파일이 존재하면*/}
+                        if(files[i] != null && files[i] != undefined){
+                            let formData = new FormData(fileForm.current)
+                            {/* 드래그된 파일을 폼데이터 추가 */}
+                            formData.set('attachFile' , files[i])
+                            fileAxios(formData)
+                        }
+                    }
+                    e.target.style.backgroundColor = '#ffffff';
+                } }
+            >
             {
                 msgContent.map((m)=>{
                     return(<>
@@ -104,10 +139,12 @@ export default function Chatting(props) {
                 <span> {id} </span>
                 <input className="msgInput" ref={ msgInput } type="text" />
                 <button onClick={ onSend }>전송</button>
-                <form ref={fileForm}>
-                    <input ref={fileInput} type="file" name="attachFile"/>
-                </form>
             </div>
+                <form ref={fileForm}>
+                    <div className="inputDiv">
+                        <input ref={fileInput} type="file" name="attachFile"/>
+                    </div>
+                </form>
         </Container>
     </>)
 }

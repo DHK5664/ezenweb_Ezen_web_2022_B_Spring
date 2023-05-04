@@ -36,7 +36,7 @@ public class FileService {
             // * 만약에 다른 이미지인데 파일명이 동일하면 덮어씌워짐[ 식별 불가 ] : UUID + 파일명
             String fileName =
                     UUID.randomUUID().toString() +"_"+
-                            multipartFile.getOriginalFilename();
+                            multipartFile.getOriginalFilename().replaceAll("_" , "-");
             // 2. 경로+파일명 조합해서 file 클래스 객체 생성 [왜 File 클래스?? transferTo ]
             File file = new File(path + fileName);
             // 3. 업로드 multipartFile.transferTo(저장할 File 클래스의 객체);
