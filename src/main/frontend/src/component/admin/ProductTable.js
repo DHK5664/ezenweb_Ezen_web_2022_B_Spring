@@ -8,12 +8,12 @@ const columns = [ // rows 객체 내 필드명과 동일
   { field: 'pname', headerName: '제품명', width: 150 },
   { field: 'pprice', headerName: '가격', type: 'number', width: 70 },
   { field: 'pcategory', headerName: '카테고리', width: 70, },
-  { field: 'pcomment', headerName: '제품 설명', description: '필드설명', sortable: false, width: 50 },
+  { field: 'pcomment', headerName: '제품 설명', description: '필드설명', sortable: false, width: 100 },
   { field: 'pmanufacturer', headerName: '제조사', width: 70, },
-  { field: 'pstate', headerName: '제품 상태', type: 'number', width: 30, },
-  { field: 'pstock', headerName: '재고 수량', type: 'number', width: 70, },
-  { field: 'cdate', headerName: '최초등록일', width: 100, },
-  { field: 'udate', headerName: '최근수정일', width: 100, },
+  { field: 'pstate', headerName: '상태', type: 'number', width: 30, },
+  { field: 'pstock', headerName: '재고수량', type: 'number', width: 70, },
+  { field: 'cdate', headerName: '최초등록일', width: 150, },
+  { field: 'udate', headerName: '최근수정일', width: 150, },
 ];
 
 
@@ -40,7 +40,7 @@ export default function ProductTable(props) {
                 paginationModel: { page: 0, pageSize: 5 },
               },
             }}
-            pageSizeOptions={[5, 10]}
+            pageSizeOptions={[5, 10 , 15 , 20]}
             checkboxSelection
           />
         </div>
