@@ -23,7 +23,7 @@ export default function DashBoard(props) {
     // 1. 현재 선택한 탭 번호
     const [value, setValue] = React.useState('1');
     // 2. 탭 변경
-    const handleChange = (event, newValue) => {
+    const handleTabsChange = (event, newValue) => {
         setValue(newValue);
     };
 
@@ -32,7 +32,7 @@ export default function DashBoard(props) {
             <Box sx={{ width: '100%', typography: 'body1' }}>
               <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <TabList onChange={handleChange} aria-label="lab API tabs example">
+                  <TabList onChange={handleTabsChange} aria-label="lab API tabs example">
                     <Tab label="게시판카테고리등록" value="1" />
                     <Tab label="제품 등록" value="2" />
                     <Tab label="제품 관리" value="3" />
@@ -45,7 +45,7 @@ export default function DashBoard(props) {
                     <button onClick={setCategory} type="button"> 카테고리 등록 </button>
                 </TabPanel>
                 <TabPanel value="2">
-                    <ProductWrite/>
+                    <ProductWrite handleTabsChange={handleTabsChange}/>
                 </TabPanel>
                 <TabPanel value="3">
                     <ProductTable/>
