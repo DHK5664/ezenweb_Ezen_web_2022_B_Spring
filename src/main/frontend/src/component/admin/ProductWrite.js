@@ -26,7 +26,7 @@ export default function ProductWrite(props) {
             제품재고 : <input type="text" name="pstock" />
             제품이미지 : <input
                             type="file" multiple
-                            accept="image/gif,image/jpg"
+                            accept="image/gif,image/jpeg,image/png"
                             name="pimgs" />
             <button type="button" onClick={onWriteHandler}> 제품등록 </button>
         </form>

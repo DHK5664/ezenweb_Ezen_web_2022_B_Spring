@@ -23,7 +23,7 @@ public class FileService {
     // * 첨부파일 저장 할 경로 [ 1.배포 전 2.배포 후 ]
     String path = "C:\\java\\";
 
-    public FileDto fileupload(@RequestParam("attachFile") MultipartFile multipartFile){
+    public FileDto fileupload( MultipartFile multipartFile){
         log.info("File upload : " + multipartFile);
         log.info("File upload : " + multipartFile.getOriginalFilename());   // 실제 첨부파일 파일명
         log.info("File upload : " + multipartFile.getName());               // input name
@@ -40,8 +40,7 @@ public class FileService {
             // 2. 경로+파일명 조합해서 file 클래스 객체 생성 [왜 File 클래스?? transferTo ]
             File file = new File(path + fileName);
             // 3. 업로드 multipartFile.transferTo(저장할 File 클래스의 객체);
-            try {
-                multipartFile.transferTo(file);
+            try { multipartFile.transferTo(file);
             }catch (Exception e){log.info("file upload fail : " +e);}
             // 4. 반환
             return FileDto.builder()
