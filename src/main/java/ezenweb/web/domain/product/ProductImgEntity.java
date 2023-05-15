@@ -1,5 +1,6 @@
 package ezenweb.web.domain.product;
 
+import ezenweb.web.domain.file.FileDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,4 +15,11 @@ public class ProductImgEntity {
     @JoinColumn(name="id")  // DB테이블에 표시될 FK 필드명
     @ToString.Exclude   // 순환참조 방지 (서로 불러대서 무한루프 걸림)
     private  ProductEntity productEntity;
+
+    public FileDto toFileDto() {
+        return FileDto.builder()
+                .uuidFile(this.uuidFile)
+                .originalFilename(this.originalFilename)
+                .build();
+    }
 }

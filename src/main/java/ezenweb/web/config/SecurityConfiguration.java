@@ -37,6 +37,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //super.configure(http);  // super : 부모클래스 호출
         http// 기능 추가 / 구분할때 사용되는 메소드
+                    .authorizeHttpRequests() // 1.인증[권한]에 따른 http 요청 제한
+                        .antMatchers("/admin/**").hasRole("ADMIN")// 관리자 페이지는 관리자 권한 있는 유저만 가능
+                        .antMatchers("/board/update").hasAnyRole("USER" , "ADMIN")//
+                        .antMatchers("/board/delete").hasRole("USER")
+                        .antMatchers("/board/write").hasRole("USER")
+                        .antMatchers("/**").permitAll()
+                    .and()
                     .formLogin()
                         .loginPage("/member/login") // 로그인으로 사용될 페이지 의 URL
                         .loginProcessingUrl("/member/login") // 로그인을 처리할 매핑 URL -> html에서 submit시 여기로 도착
@@ -60,7 +67,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.cors(); // CORS 정책 사용
         http.csrf().disable(); // csrf 사용 해제
-
     }// configure end
 
     // import org.springframework.web.cors.CorsConfigurationSource;

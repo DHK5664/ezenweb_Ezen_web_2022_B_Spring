@@ -21,7 +21,13 @@ import java.util.UUID;
 public class FileService {
 
     // * 첨부파일 저장 할 경로 [ 1.배포 전 2.배포 후 ]
-    String path = "C:\\java\\";
+    // 1. 업로드 , 다운로드
+    //String path = "C:\\java\\"; // spring서버 로컬드라이브[c] 접근가능
+    // 2. 업로드 , 다운로드 , 리액트 리소스 접근
+    // JS[react] 로컬드라이브[c] 접근 불가능--> 리액트서버에 업로드
+    // springboot + react 통합
+    // react build --> spring resources --> spring build --> 프로젝트내 build
+    String path = "C:\\Users\\504\\Desktop\\ezenweb_Ezen_web_2022_B_Spring\\build\\resources\\main\\static\\static\\media\\";
 
     public FileDto fileupload( MultipartFile multipartFile){
         log.info("File upload : " + multipartFile);
