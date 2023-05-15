@@ -9,9 +9,7 @@ import Container from '@mui/material/Container';
 export default function View(props) {
 
    const params = useParams();
-   const [ board , setBoard ] = useState( {
-        replyDtoList : []
-   } );
+   const [ board , setBoard ] = useState( { replyDtoList : [] } );
 
    // 1. 현재 게시물 가져오는 axios 함수
    const getBoard = ()=>{

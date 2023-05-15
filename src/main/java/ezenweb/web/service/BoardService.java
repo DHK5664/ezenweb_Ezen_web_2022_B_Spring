@@ -85,7 +85,7 @@ public class BoardService {
         // 1. pageable 인터페이스 [ 페이징처리 관련 api ] // import org.springframework.data.domain.Pageable;
         Pageable pageable = PageRequest.of( pageDto.getPage()-1 , 5 , Sort.by( Sort.Direction.DESC , "bno") );
         // PageRequest.of( 현재 페이지번호[0시작] , 페이지당 표시할 게시물수  , Sort.by( Sort.Direction.ASC/DESC , '정렬기준필드명'  ) );
-        Page<BoardEntity> entityPage =
+        Page<BoardEntity>  entityPage =
                 boardEntityRepository.findBySearch( pageDto.getCno() , pageDto.getKey() , pageDto.getKeyword() , pageable );
         // entity --> dto
         List<BoardDto> boardDtoList = new ArrayList<>();
